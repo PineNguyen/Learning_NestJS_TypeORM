@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Query } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from './dto/createUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('users')
 export class UserController {
@@ -7,36 +9,43 @@ export class UserController {
 
   //When the path is users/showUser
   //Call the showAllUser method from userService
-  @Get('showUser')
-  getAll() {
-    return this.userService.showAllUser();
+  @Get('show')
+  getAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10,
+    @Query('search') search?: string,
+  ) {
+    return this.userService.showAllUser({ page, limit, search });
   }
 
   //When the path is users/showUser/id
   //Call the showOneUser method from userService
-  @Get('showUser/:id')
+  @Get('show/:id')
   getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.showOneUser(id);
+    return this.userService.showOneUserById(id);
   }
 
   //When the path is users/createUser
   //Call the createUser method with parameters that taken in request's body
-  @Post('createUser')
-  create(@Body() body: { name: string; email: string }) {
-    return this.userService.createUser(body.name, body.email);
+  @Post('create')
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createUser(createUserDto);
   }
 
   //When the path is users/updateUser/id
   //Call the updateUser method with id that taken in request
-  @Put('updateUser/:id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() body: { name: string; email: string }) {
-    return this.userService.updateUser(id, body.name, body.email);
+  @Put('update/:id')
+  update(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() body: UpdateUserDto
+  ) {
+    return this.userService.updateUserById(id, body);
   }
 
   //When the path is users/deleteUser/id
   //Call the deleteUser method with id that taken in request
-  @Delete('deleteUser/:id')
+  @Delete('delete/:id')
   delete(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.deleteUser(id);
+    return this.userService.deleteUserById(id);
   }
 }

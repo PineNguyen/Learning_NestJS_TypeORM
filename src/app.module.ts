@@ -6,14 +6,16 @@ require('dotenv').config();
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      //I use the type casting directly because type is a union type
+      //so it just receive a specific value
+      type: process.env.DB_TYPE as 'mysql',
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      synchronize: true, // chỉ để demo
+      synchronize: true, 
     }),
     UserModule,
   ],
