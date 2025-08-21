@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Query } 
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { GetUserDto } from './dto/getUser.dto';
 
 @Controller('users')
 export class UserController {
@@ -10,12 +11,8 @@ export class UserController {
   //When the path is users/showUser
   //Call the showAllUser method from userService
   @Get('show')
-  getAll(
-    @Query('page', ParseIntPipe) page: number = 1,
-    @Query('limit', ParseIntPipe) limit: number = 10,
-    @Query('search') search?: string,
-  ) {
-    return this.userService.showAllUser({ page, limit, search });
+  getAll(@Query() getUserDto: GetUserDto) {
+    return this.userService.showAllUser(getUserDto);
   }
 
   //When the path is users/showUser/id

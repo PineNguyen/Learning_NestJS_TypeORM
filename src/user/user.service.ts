@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { GetUserDto } from './dto/getUser.dto';
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,7 @@ export class UserService {
   //page: the page that will show search results
   //limit: number of result that will show on page
   //search: the value that user want to find
-  async showAllUser(options: { page: number, limit: number, search?: string }) {
+  async showAllUser(options: GetUserDto) {
     const { page, limit, search } = options;
 
     const [data, total] = await this.userRepo.findAndCount({
@@ -45,14 +46,14 @@ export class UserService {
   //Similar showAllUser, but this method just show one function
   //that has the corresponding id by findOneBy method
   //id is the id of user that want to show
-  async showOneUserById(id) {
+  async showOneUserById(id: number) {
     const user = await this.userRepo.findOneBy({ id });
 
     if(!user) {
       throw new NotFoundException(`User with ID "${id}" not found`);
     }
 
-    return this.userRepo.findBy(user);
+    return user;
     // return this.userRepo.findOneBy({ id });
   }
 
